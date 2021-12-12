@@ -1,0 +1,22 @@
+{
+    "name": "windawake/hyperf-reset-transaction",
+    "description": "distributed transaction for call remote api service",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Windawake\\HyperfResetTransaction\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "zhangzibin",
+            "email": "619146134@qq.com"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "hyperf": {
+            "config": "Windawake\\HyperfResetTransaction\\ConfigProvider"
+        }
+    }
+}
