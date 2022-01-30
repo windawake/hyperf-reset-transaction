@@ -14,7 +14,7 @@ namespace Windawake\HyperfResetTransaction\Database;
 
 use Hyperf\Database\Query\Processors\MySqlProcessor as Processor;
 use Hyperf\Database\Query\Builder;
-use Laravel\ResetTransaction\Facades\RT;
+use Windawake\HyperfResetTransaction\Facades\RT;
 
 class MySqlProcessor extends Processor
 {
