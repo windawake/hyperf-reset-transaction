@@ -43,7 +43,10 @@ class DistributeTransactMiddleware implements MiddlewareInterface
         $transactId = $request->getHeaderLine('rt_transact_id');
         $connection = $request->getHeaderLine('rt_connection');
         if ($connection) {
-            Context::set('rt_connection', $connection);
+            $config = $this->container->get(ConfigInterface::class);
+            $databases = $config->get('databases');
+            $databases['default'] = $databases[$connection];
+            $config->set('databases', $databases);
         }
         
         if ($transactId) {

@@ -360,6 +360,8 @@ class ResetTransaction
 
     public function saveQuery($query, $bindings, $result, $checkResult, $keyName = null, $id = null)
     {
+        $connection = Db::connection();
+        $conName = $connection->getConfig('connection_name', 'default');
         $rtTransactId = $this->getTransactId();
         if ($rtTransactId && $query && !strpos($query, 'reset_transact')) {
             $subString = strtolower(substr(trim($query), 0, 12));
@@ -375,6 +377,10 @@ class ResetTransaction
                     // if only queryBuilder insert or batch insert then return false
                     if (is_null($id)) {
                         return false;
+                    }
+
+                    if (is_null($keyName)) {
+                        $keyName = 'id';
                     }
 
                     if (!strpos($query, "`{$keyName}`")) {
@@ -395,7 +401,7 @@ class ResetTransaction
                     'sql' => $backupSql, 
                     'result' => $result,
                     'check_result' => (int) $checkResult,
-                    'connection' => Context::get('rt_connection', 'default'),
+                    'connection' => $conName,
                 ];
                 Context::override('rt_transact_sql', function ($value) use ($sqlItem) {
                     if (is_null($value)) {
