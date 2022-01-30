@@ -24,6 +24,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Response;
 use Windawake\HyperfResetTransaction\Exception\ResetTransactionException;
 use Windawake\HyperfResetTransaction\Facades\RT;
+use Hyperf\Database\ConnectionResolverInterface;
 
 class DistributeTransactMiddleware implements MiddlewareInterface
 {
@@ -43,10 +44,8 @@ class DistributeTransactMiddleware implements MiddlewareInterface
         $transactId = $request->getHeaderLine('rt_transact_id');
         $connection = $request->getHeaderLine('rt_connection');
         if ($connection) {
-            $config = $this->container->get(ConfigInterface::class);
-            $databases = $config->get('databases');
-            $databases['default'] = $databases[$connection];
-            $config->set('databases', $databases);
+            $resolver = ApplicationContext::getContainer()->get(ConnectionResolverInterface::class);
+            $resolver->setDefaultConnection($connection);
         }
         
         if ($transactId) {
@@ -73,7 +72,7 @@ class DistributeTransactMiddleware implements MiddlewareInterface
             DB::connection('rt_center')->table('reset_transact_req')->insert([
                 'transact_id' => $transactIdArr[0],
                 'request_id' => $requestId,
-                'response' => $response->getContent(),
+                'response' => $response->getBody()->getContents(),
             ]);
         }
 

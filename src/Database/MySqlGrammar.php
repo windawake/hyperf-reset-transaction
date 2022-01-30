@@ -15,6 +15,7 @@ namespace Windawake\HyperfResetTransaction\Database;
 
 use Hyperf\Database\Query\Grammars\MySqlGrammar as Grammar;
 use Windawake\HyperfResetTransaction\Facades\RT;
+use Hyperf\Utils\Context;
 
 class MySqlGrammar extends Grammar
 {
@@ -29,7 +30,7 @@ class MySqlGrammar extends Grammar
         $sql = 'SAVEPOINT '.$name;
         
         $transactId = RT::getTransactId();
-        $stmt = session()->get('rt_stmt');
+        $stmt = Context::get('rt_stmt');
         if ($transactId && is_null($stmt)) {
             RT::saveQuery($sql, [], 0, 0);
         }
@@ -48,7 +49,7 @@ class MySqlGrammar extends Grammar
         $sql = 'ROLLBACK TO SAVEPOINT '.$name;
 
         $transactId = RT::getTransactId();
-        $stmt = session()->get('rt_stmt');
+        $stmt = Context::get('rt_stmt');
         if ($transactId && is_null($stmt)) {
             RT::saveQuery($sql, [], 0, 0);
         }
