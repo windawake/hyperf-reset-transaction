@@ -20,17 +20,27 @@ class ConfigProvider
 {
     public function __invoke(): array
     {
-        $config = [
+        $configArr = [
             'commands' => [
                 CreateExamplesCommand::class,
             ],
+            'databases' => $this->getRtDatabases()
         ];
         // overide MySqlConnection
-        Connection::resolverFor('mysql', function ($connection, $database, $prefix, $config) {
-
-            return new ResetMySqlConnection($connection, $database, $prefix, $config);
+        Connection::resolverFor('mysql', function ($connection, $database, $prefix, $configArr) {
+            return new ResetMySqlConnection($connection, $database, $prefix, $configArr);
         });
 
-        return $config;
+        return $configArr;
+    }
+
+    private function getRtDatabases()
+    {
+        $rt = include BASE_PATH.'/config/autoload/rt_database.php';
+        if ($rt) {
+            return array_merge($rt['center']['connections'], $rt['service_connections']);
+        }
+
+        return [];
     }
 }

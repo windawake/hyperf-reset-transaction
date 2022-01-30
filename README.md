@@ -15,3 +15,23 @@
 
 ## 参考教程
 https://learnku.com/articles/62377
+
+
+## demo
+
+composer test -- --testsuit=Transaction
+
+composer require doctrine/dbal
+
+```c++
+[
+    'name' => 'http',
+    'type' => Server::SERVER_HTTP,
+    'host' => '0.0.0.0',
+    'port' => 9502,
+    'sock_type' => SWOOLE_SOCK_TCP,
+    'callbacks' => [
+        Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
+    ],
+],
+```
