@@ -2,13 +2,13 @@
 基于分布式事务RT模式实现，适用于hyperf框架的组件。
 
 ## 快速预览
-在hyperf框架根目录下安装composer组件
+第一步，在hyperf框架根目录下安装composer组件
 ```shell
 ## 必须使用composer2版本
 composer require windawake/hyperf-reset-transaction dev-master
 ```
-在`./config/autoload/server.php`文件，默认使用9501端口配置，然后增加9502端口的配置
-```
+第二步，在`./config/autoload/server.php`文件，默认使用9501端口配置，然后增加9502端口的配置
+```php
     'servers' => [
         [
             'name' => 'http',
@@ -32,7 +32,14 @@ composer require windawake/hyperf-reset-transaction dev-master
         ],
     ],
 ```
-
+第三步，在`vendor/hyperf/db-connection/src/Db.php`文件，把`__connection($pool = 'default')`修改为`__connection($pool = null)`，本地测试的需要。
+```php
+    private function __connection($pool = null): ConnectionInterface
+    {
+        $resolver = $this->container->get(ConnectionResolverInterface::class);
+        return $resolver->connection($pool);
+    }
+```
 删除`runtime`文件夹，然后创建order，storage，account3个mysql数据库实例，3个控制器，3个model，在phpunit.xml增加testsuite Transaction，然后启动web服务器。这些操作只需要执行下面命令全部完成
 ```shell
 rm -rf ./runtime && php ./bin/hyperf.php resetTransact:create-examples && php ./bin/hyperf.php start
