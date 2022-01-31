@@ -72,3 +72,8 @@ OK (3 tests, 12 assertions)
 ## 参考教程
 https://learnku.com/articles/62377
 
+
+![](https://cdn.learnku.com/uploads/images/202201/31/46914/7PISKMj6cY.jpg!large)
+
+扫码进微信群。希望有更多的朋友相互学习和一起研究分布式事务的知识。
+
