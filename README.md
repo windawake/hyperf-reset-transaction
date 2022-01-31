@@ -32,15 +32,7 @@ composer require windawake/hyperf-reset-transaction dev-master
         ],
     ],
 ```
-第三步，在`vendor/hyperf/db-connection/src/Db.php`文件，把`__connection($pool = 'default')`修改为`__connection($pool = null)`，本地测试的需要。
-```php
-    private function __connection($pool = null): ConnectionInterface
-    {
-        $resolver = $this->container->get(ConnectionResolverInterface::class);
-        return $resolver->connection($pool);
-    }
-```
-删除`runtime`文件夹，然后创建order，storage，account3个mysql数据库实例，3个控制器，3个model，在phpunit.xml增加testsuite Transaction，然后启动web服务器。这些操作只需要执行下面命令全部完成
+第三步，删除`runtime`文件夹，然后创建order，storage，account3个mysql数据库实例，3个控制器，3个model，在phpunit.xml增加testsuite Transaction，然后启动web服务器。这些操作只需要执行下面命令全部完成
 ```shell
 rm -rf ./runtime && php ./bin/hyperf.php resetTransact:create-examples && php ./bin/hyperf.php start
 ```

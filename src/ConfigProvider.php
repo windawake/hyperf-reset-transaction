@@ -21,6 +21,9 @@ class ConfigProvider
     public function __invoke(): array
     {
         $configArr = [
+            'dependencies' => [
+                \Hyperf\DbConnection\Db::class => \Windawake\HyperfResetTransaction\Core\OverrideDb::class,
+            ],
             'commands' => [
                 CreateExamplesCommand::class,
             ],
