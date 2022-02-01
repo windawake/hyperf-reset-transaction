@@ -16,6 +16,7 @@ use App\Model\ResetStorageModel;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\Middlewares;
+use Windawake\HyperfResetTransaction\Middleware\ServiceStorageMiddleware;
 use Windawake\HyperfResetTransaction\Middleware\DistributeTransactMiddleware;
 use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\PostMapping;
@@ -27,7 +28,8 @@ use Hyperf\DbConnection\Db;
 /**
  * @Controller(prefix="api/resetStorage")
  * @Middlewares({
- *     @Middleware(DistributeTransactMiddleware::class)
+ *      @Middleware(ServiceStorageMiddleware::class),
+ *      @Middleware(DistributeTransactMiddleware::class)
  * })
  */
 class ResetStorageController extends AbstractController

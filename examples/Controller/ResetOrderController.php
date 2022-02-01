@@ -16,6 +16,7 @@ use App\Model\ResetOrderModel;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\Middlewares;
+use Windawake\HyperfResetTransaction\Middleware\ServiceOrderMiddleware;
 use Windawake\HyperfResetTransaction\Middleware\DistributeTransactMiddleware;
 use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\PostMapping;
@@ -28,7 +29,8 @@ use Windawake\HyperfResetTransaction\Facades\RT;
 /**
  * @Controller(prefix="api/resetOrder")
  * @Middlewares({
- *     @Middleware(DistributeTransactMiddleware::class)
+ *      @Middleware(ServiceOrderMiddleware::class),
+ *      @Middleware(DistributeTransactMiddleware::class)
  * })
  */
 class ResetOrderController extends AbstractController
@@ -96,147 +98,5 @@ class ResetOrderController extends AbstractController
         $attr = ['id' => $id];
         $item = ResetOrderModel::updateOrCreate($attr, $this->request->all());
         return $item;
-    }
-
-    public function deadlockWithLocal()
-    {
-        Db::beginTransaction();
-
-        $s = ($this->request->getPort()) % 2;
-        for ($i = $s; $i < 3; $i++) {
-            $id = $i % 2 + 1;
-            $attrs = ['id' => $id];
-            $values = ['order_no' => session_create_id()];
-
-            ResetOrderModel::updateOrCreate($attrs, $values);
-            usleep(rand(1, 200) * 1000);
-        }
-        Db::commit();
-    }
-
-    public function deadlockWithRt()
-    {
-        $transactId = RT::beginTransaction();
-        $s = ($this->request->getPort()) % 2;
-        for ($i = $s; $i < 3; $i++) {
-            $id = $i % 2 + 1;
-            // $attrs = ['id' => $id];
-            // $values = ['order_no' => session_create_id()];
-            // ResetOrderModel::updateOrCreate($attrs, $values);
-            
-            $client = new Client([
-                'base_uri' => 'http://127.0.0.1:8002',
-                'timeout' => 60,
-            ]);
-            $client->put('/api/resetOrderTest/updateOrCreate/'.$id, [
-                'json' =>['order_no' => session_create_id()],
-                'headers' => [
-                    'rt_request_id' => session_create_id(),
-                    'rt_transact_id' => $transactId,
-                    'rt_connection' => 'service_order'
-                ]
-            ]);
-            
-            usleep(rand(1, 200) * 1000);
-        }
-        RT::commit();
-    }
-
-    public function orderWithLocal()
-    {
-        Db::beginTransaction();
-        usleep(rand(1, 200) * 1000);
-        $orderNo = session_create_id();
-        $stockQty = rand(1, 5);
-        $amount = rand(1, 50)/10;
-
-        $item = ResetOrderModel::create([
-            'order_no' => $orderNo,
-            'stock_qty' => $stockQty,
-            'amount' => $amount
-        ]);
-
-        $item->increment('stock_qty');
-        Db::commit();
-    }
-
-    public function orderWithRt()
-    {
-        RT::beginTransaction();
-        usleep(rand(1, 200) * 1000);
-        $orderNo = session_create_id();
-        $stockQty = rand(1, 5);
-        $amount = rand(1, 50)/10;
-
-        $item = ResetOrderModel::create([
-            'order_no' => $orderNo,
-            'stock_qty' => $stockQty,
-            'amount' => $amount
-        ]);
-
-        $item->increment('stock_qty');
-        RT::commit();
-    }
-
-    public function disorderWithLocal()
-    {
-        Db::beginTransaction();
-        usleep(rand(1, 200) * 1000);
-        $orderNo = session_create_id();
-        $stockQty = rand(1, 5);
-        $amount = rand(1, 50)/10;
-        $status = rand(1, 3);
-
-        $item = ResetOrderModel::updateOrCreate([
-            'id' => rand(1, 10),
-        ], [
-            'order_no' => $orderNo,
-            'stock_qty' => $stockQty,
-            'amount' => $amount,
-            'status' => $status,
-        ]);
-
-
-        $item = ResetOrderModel::find(rand(1, 10));
-        if ($item) {
-            $item->delete();
-        }
-
-        if (rand(0,1) == 0) {
-            ResetOrderModel::where('status', $status)->update(['stock_qty' => rand(1, 5)]);
-        }
-
-        Db::commit();
-    }
-
-    public function disorderWithRt()
-    {
-        RT::beginTransaction();
-        usleep(rand(1, 200) * 1000);
-        $orderNo = session_create_id();
-        $stockQty = rand(1, 5);
-        $amount = rand(1, 50)/10;
-        $status = rand(1, 3);
-
-        $item = ResetOrderModel::updateOrCreate([
-            'id' => rand(1, 10),
-        ], [
-            'order_no' => $orderNo,
-            'stock_qty' => $stockQty,
-            'amount' => $amount,
-            'status' => $status,
-        ]);
-
-
-        $item = ResetOrderModel::find(rand(1, 10));
-        if ($item) {
-            $item->delete();
-        }
-
-        if (rand(0,1) == 0) {
-            ResetOrderModel::where('status', $status)->update(['stock_qty' => rand(1, 5)]);
-        }
-
-        RT::commit();
     }
 }

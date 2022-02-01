@@ -3,6 +3,7 @@
 namespace Windawake\HyperfResetTransaction\Facades;
 
 use Hyperf\Utils\ApplicationContext;
+use Hyperf\Utils\Context;
 
 /**
  * @method static string beginTransaction()
@@ -27,7 +28,13 @@ class RT
     
     public static function __callStatic($name, $arguments)
     {
-        $rt = ApplicationContext::getContainer()->get(ResetTransaction::class);
+        $id = 'rt_facade';
+        if (Context::has($id)) {
+            $rt = Context::get($id);
+        } else {
+            $rt = new ResetTransaction();
+            Context::set($id, $rt);
+        }
 
         return $rt->{$name}(...$arguments);
     }

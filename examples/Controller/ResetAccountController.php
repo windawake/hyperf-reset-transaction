@@ -16,6 +16,7 @@ use App\Model\ResetAccountModel;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\Middlewares;
+use Windawake\HyperfResetTransaction\Middleware\ServiceAccountMiddleware;
 use Windawake\HyperfResetTransaction\Middleware\DistributeTransactMiddleware;
 use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\PostMapping;
@@ -28,7 +29,8 @@ use Windawake\HyperfResetTransaction\Facades\RT;
 /**
  * @Controller(prefix="api/resetAccount")
  * @Middlewares({
- *     @Middleware(DistributeTransactMiddleware::class)
+ *      @Middleware(ServiceAccountMiddleware::class),
+ *      @Middleware(DistributeTransactMiddleware::class)
  * })
  */
 class ResetAccountController extends AbstractController

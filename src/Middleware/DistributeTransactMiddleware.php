@@ -42,11 +42,6 @@ class DistributeTransactMiddleware implements MiddlewareInterface
     {
         $requestId = $request->getHeaderLine('rt_request_id');
         $transactId = $request->getHeaderLine('rt_transact_id');
-        $connection = $request->getHeaderLine('rt_connection');
-        if ($connection) {
-            $resolver = ApplicationContext::getContainer()->get(ConnectionResolverInterface::class);
-            $resolver->setDefaultConnection($connection);
-        }
         
         if ($transactId) {
             if (!$requestId) {
@@ -59,7 +54,7 @@ class DistributeTransactMiddleware implements MiddlewareInterface
                 return Response::json($data);
             }
 
-            RT::middlewareBeginTransaction($transactId, $connection);
+            RT::middlewareBeginTransaction($transactId);
         }
 
         $response = $handler->handle($request);

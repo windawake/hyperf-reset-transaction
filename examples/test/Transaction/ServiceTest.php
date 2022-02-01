@@ -106,7 +106,6 @@ class ServiceTest extends TestCase
             'headers' => [
                 'rt_request_id' => $requestId,
                 'rt_transact_id' => $transactId,
-                'rt_connection' => 'service_storage'
             ]
         ]);
         $resArr1 = $this->responseToArray($response);
@@ -121,7 +120,6 @@ class ServiceTest extends TestCase
             'headers' => [
                 'rt_request_id' => $requestId,
                 'rt_transact_id' => $transactId,
-                'rt_connection' => 'service_account'
             ]
         ]);
         $resArr2 = $this->responseToArray($response);
@@ -164,7 +162,6 @@ class ServiceTest extends TestCase
             'headers' => [
                 'rt_request_id' => $requestId,
                 'rt_transact_id' => $transactId,
-                'rt_connection' => 'service_storage'
             ]
         ]);
         $resArr1 = $this->responseToArray($response);
@@ -179,7 +176,6 @@ class ServiceTest extends TestCase
             'headers' => [
                 'rt_request_id' => $requestId,
                 'rt_transact_id' => $transactId,
-                'rt_connection' => 'service_account'
             ]
         ]);
         $resArr2 = $this->responseToArray($response);
@@ -219,7 +215,6 @@ class ServiceTest extends TestCase
             'headers' => [
                 'rt_request_id' => session_create_id(),
                 'rt_transact_id' => $txId,
-                'rt_connection' => 'service_order'
             ]
         ]);
             $txId2 = RT::beginTransaction();
@@ -231,7 +226,6 @@ class ServiceTest extends TestCase
                 'headers' => [
                     'rt_request_id' => session_create_id(),
                     'rt_transact_id' => $txId2,
-                    'rt_connection' => 'service_order'
                 ]
             ]);
 
@@ -244,7 +238,6 @@ class ServiceTest extends TestCase
                     'headers' => [
                         'rt_request_id' => session_create_id(),
                         'rt_transact_id' => $txId3,
-                        'rt_connection' => 'service_order'
                     ]
                 ]);
 
@@ -255,7 +248,6 @@ class ServiceTest extends TestCase
                     'headers' => [
                         'rt_request_id' => session_create_id(),
                         'rt_transact_id' => $txId3,
-                        'rt_connection' => 'service_order'
                     ]
                 ]);
                 $resArr = $this->responseToArray($response);
@@ -272,9 +264,6 @@ class ServiceTest extends TestCase
             'json' => [
                 'status' => $status,
             ],
-            'headers' => [
-                'rt_connection' => 'service_order'
-            ]
         ]);
         $resArr = $this->responseToArray($response);
         // 3层事务内，有3个订单修改了状态，但是第2层事务回滚了， 只有第1层事务成功提交
