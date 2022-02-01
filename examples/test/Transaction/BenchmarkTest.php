@@ -57,14 +57,13 @@ class BenchmarkTest extends TestCase
         $count1 = ResetOrderModel::count();
         $dataPath = __DIR__.'/data.txt';
 
-        $shellOne = "ab -n 100 -c 10 -p '{$dataPath}' {$this->urlOne}/resetOrderTest/orderWithLocal";
-        $shellTwo = "ab -n 100 -c 10 -p '{$dataPath}' {$this->urlTwo}/resetOrderTest/orderWithLocal";
-
-        $shell = sprintf("%s & %s", $shellOne, $shellTwo);
+        $shellOne = "ab -n 1000 -c 100 -p '{$dataPath}' {$this->urlOne}/resetOrderTest/orderWithLocal";
+        $shell = sprintf("%s", $shellOne);
         exec($shell, $output, $resultCode);
+        echo $output;
         $count2 = ResetOrderModel::count();
 
-        $this->assertTrue($count2 - $count1 == 200);
+        $this->assertTrue($count2 - $count1 == 1000);
 
         $this->assertTrue(true);
     }
@@ -74,15 +73,14 @@ class BenchmarkTest extends TestCase
         $count1 = ResetOrderModel::count();
         $dataPath = __DIR__.'/data.txt';
 
-        $shellOne = "ab -n 100 -c 10 -p '{$dataPath}' {$this->urlOne}/resetOrderTest/orderWithRt";
-        $shellTwo = "ab -n 100 -c 10 -p '{$dataPath}' {$this->urlTwo}/resetOrderTest/orderWithRt";
-
-        $shell = sprintf("%s & %s", $shellOne, $shellTwo);
-
+        $shellOne = "ab -n 1000 -c 100 -p '{$dataPath}' {$this->urlOne}/resetOrderTest/orderWithRt";
+        $shell = sprintf("%s", $shellOne);
         exec($shell, $output, $resultCode);
+        echo $output;
+
         $count2 = ResetOrderModel::count();
 
-        $this->assertTrue($count2 - $count1 == 200);
+        $this->assertTrue($count2 - $count1 == 1000);
     }
 
     public function testBatchCreate03()
