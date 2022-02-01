@@ -141,6 +141,10 @@ class ResetOrderTestController extends AbstractController
         
         Db::commit();
 
+        for ($i = 0; $i < 10; $i++) {
+            ResetOrderModel::first();
+        }
+
         return ['code' => 1];
     }
 
