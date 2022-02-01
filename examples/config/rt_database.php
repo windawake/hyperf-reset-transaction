@@ -27,7 +27,7 @@ return [
                 'prefix' => env('DB_PREFIX', ''),
                 'pool' => [
                     'min_connections' => 1,
-                    'max_connections' => 100,
+                    'max_connections' => 300,
                     'connect_timeout' => 10.0,
                     'wait_timeout' => 30,
                     'heartbeat' => -1,
@@ -58,7 +58,7 @@ return [
             'prefix' => env('DB_PREFIX', ''),
             'pool' => [
                 'min_connections' => 1,
-                'max_connections' => 100,
+                'max_connections' => 300,
                 'connect_timeout' => 10.0,
                 'wait_timeout' => 30,
                 'heartbeat' => -1,
@@ -85,7 +85,7 @@ return [
             'prefix' => env('DB_PREFIX', ''),
             'pool' => [
                 'min_connections' => 1,
-                'max_connections' => 100,
+                'max_connections' => 300,
                 'connect_timeout' => 10.0,
                 'wait_timeout' => 30,
                 'heartbeat' => -1,
@@ -112,7 +112,7 @@ return [
             'prefix' => env('DB_PREFIX', ''),
             'pool' => [
                 'min_connections' => 1,
-                'max_connections' => 100,
+                'max_connections' => 300,
                 'connect_timeout' => 10.0,
                 'wait_timeout' => 30,
                 'heartbeat' => -1,
