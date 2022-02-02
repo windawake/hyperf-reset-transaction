@@ -11,8 +11,8 @@ declare(strict_types=1);
  */
 return [
     'center' =>[
-        'commit_url' => 'http://127.0.0.1:9502/api/resetTransaction/commit',
-        'rollback_url' => 'http://127.0.0.1:9502/api/resetTransaction/rollback',
+        'commit_url' => 'http://127.0.0.1:9503/api/resetTransaction/commit',
+        'rollback_url' => 'http://127.0.0.1:9503/api/resetTransaction/rollback',
         'connections' => [
             'rt_center' => [
                 'connection_name' => 'rt_center',

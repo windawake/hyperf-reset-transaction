@@ -59,8 +59,7 @@ class BenchmarkTest extends TestCase
 
         $shellOne = "ab -n 1000 -c 100 -p '{$dataPath}' {$this->urlOne}/resetOrderTest/orderWithLocal";
         $shell = sprintf("%s", $shellOne);
-        exec($shell, $output, $resultCode);
-        echo $output;
+        passthru($shell, $resultCode);
         $count2 = ResetOrderModel::count();
 
         $this->assertTrue($count2 - $count1 == 1000);
@@ -75,8 +74,7 @@ class BenchmarkTest extends TestCase
 
         $shellOne = "ab -n 1000 -c 100 -p '{$dataPath}' {$this->urlOne}/resetOrderTest/orderWithRt";
         $shell = sprintf("%s", $shellOne);
-        exec($shell, $output, $resultCode);
-        echo $output;
+        passthru($shell, $resultCode);
 
         $count2 = ResetOrderModel::count();
 
@@ -107,28 +105,61 @@ class BenchmarkTest extends TestCase
 
     public function testBatchCreate05()
     {
-        ResetOrderModel::truncate();
-
+        $total1 = ResetOrderModel::count();
+        $amountSum1 = ResetOrderModel::sum('amount');
+        $stockSum1 = ResetOrderModel::sum('stock_qty');
         $amount1 = ResetAccountModel::where('id', 1)->value('amount');
-        $stockQty1 = ResetStorageModel::where('id', 1)->value('stock_qty');
+        $stock1 = ResetStorageModel::where('id', 1)->value('stock_qty');
 
         $dataPath = __DIR__.'/data.txt';
-        $shellOne = "ab -n 12 -c 4 -p '{$dataPath}' {$this->urlOne}/resetAccountTest/createOrdersCommit";
-        $shellTwo = "ab -n 12 -c 4  -p '{$dataPath}' {$this->urlTwo}/resetAccountTest/createOrdersCommit";
 
-        $shell = sprintf("%s & %s", $shellOne, $shellTwo);
-        exec($shell, $output, $resultCode);
+        $reqNums = 1000;
+        $conNums = 100;
+        $shellOne = "ab -n {$reqNums} -c {$conNums} -p '{$dataPath}' {$this->urlOne}/resetAccountTest/createOrderWithLocal";
+        $shell = sprintf("%s", $shellOne);
+        passthru($shell, $resultCode);
 
+        
+
+        $total2 = ResetOrderModel::count();
+        $amountSum2 = ResetOrderModel::sum('amount');
+        $stockSum2 = ResetOrderModel::sum('stock_qty');
         $amount2 = ResetAccountModel::where('id', 1)->value('amount');
-        $stockQty2 = ResetStorageModel::where('id', 1)->value('stock_qty');
+        $stock2 = ResetStorageModel::where('id', 1)->value('stock_qty');
 
-        $amountSum = ResetOrderModel::sum('amount');
-        $stockQtySum = ResetOrderModel::sum('stock_qty');
-        $total = ResetOrderModel::count();
+        $this->assertTrue(($total2 - $total1) == $reqNums);
+        $this->assertTrue(abs(($amount1 - $amount2) - ($amountSum2 - $amountSum1)) < 0.001);
+        $this->assertTrue(($stock1 - $stock2) == ($stockSum2 - $stockSum1));
 
-        $this->assertTrue($total == 36);
-        $this->assertTrue(abs($amount1 - $amount2 - $amountSum) < 0.001);
-        $this->assertTrue(($stockQty1 - $stockQty2) == $stockQtySum);
+    }
+
+    public function testBatchCreate06()
+    {
+        $total1 = ResetOrderModel::count();
+        $amountSum1 = ResetOrderModel::sum('amount');
+        $stockSum1 = ResetOrderModel::sum('stock_qty');
+        $amount1 = ResetAccountModel::where('id', 1)->value('amount');
+        $stock1 = ResetStorageModel::where('id', 1)->value('stock_qty');
+
+        $dataPath = __DIR__.'/data.txt';
+
+        $reqNums = 1000;
+        $conNums = 100;
+        $shellOne = "ab -n {$reqNums} -c {$conNums} -p '{$dataPath}' {$this->urlOne}/resetAccountTest/createOrderWithRt";
+        $shell = sprintf("%s", $shellOne);
+        passthru($shell, $resultCode);
+
+        
+
+        $total2 = ResetOrderModel::count();
+        $amountSum2 = ResetOrderModel::sum('amount');
+        $stockSum2 = ResetOrderModel::sum('stock_qty');
+        $amount2 = ResetAccountModel::where('id', 1)->value('amount');
+        $stock2 = ResetStorageModel::where('id', 1)->value('stock_qty');
+
+        $this->assertTrue(($total2 - $total1) == $reqNums);
+        $this->assertTrue(abs(($amount1 - $amount2) - ($amountSum2 - $amountSum1)) < 0.001);
+        $this->assertTrue(($stock1 - $stock2) == ($stockSum2 - $stockSum1));
 
     }
 }

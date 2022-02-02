@@ -19,6 +19,7 @@ use Hyperf\Database\Query\Expression;
 use Hyperf\DbConnection\Db;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
+use Hyperf\Utils\Context;
 
 /**
  * DB Helper.
@@ -54,26 +55,16 @@ class OverrideDb
         $this->container = $container;
     }
 
-    public function __call($name, $arguments)
-    {
-        if ($name === 'connection') {
-            return $this->__connection(...$arguments);
-        }
-        return $this->__connection()->{$name}(...$arguments);
-    }
-
-    public static function __callStatic($name, $arguments)
-    {
-        $db = ApplicationContext::getContainer()->get(Db::class);
-        if ($name === 'connection') {
-            return $db->__connection(...$arguments);
-        }
-        return $db->__connection()->{$name}(...$arguments);
-    }
-
     public function __connection($pool = null): ConnectionInterface
     {
         $resolver = $this->container->get(ConnectionResolverInterface::class);
-        return $resolver->connection($pool);
+        if ($pool == null) {
+            $pool = Context::get('rt_connection_defaultName');
+        }
+        
+        $connection = $resolver->connection($pool);
+        Context::set('rt_connection', $connection);
+
+        return $connection;
     }
 }

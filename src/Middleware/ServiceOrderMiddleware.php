@@ -40,8 +40,7 @@ class ServiceOrderMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $resolver = ApplicationContext::getContainer()->get(ConnectionResolverInterface::class);
-        $resolver->setDefaultConnection('service_order');
+        Context::set('rt_connection_defaultName', 'service_order');
 
         $response = $handler->handle($request);
 

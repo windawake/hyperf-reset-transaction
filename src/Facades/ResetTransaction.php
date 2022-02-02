@@ -9,6 +9,7 @@ use Windawake\HyperfResetTransaction\Exception\ResetTransactionException;
 use Hyperf\Utils\Context;
 use Hyperf\Guzzle\CoroutineHandler;
 use GuzzleHttp\HandlerStack;
+use Hyperf\Database\ConnectionResolverInterface;
 
 class ResetTransaction
 {
@@ -129,9 +130,9 @@ class ResetTransaction
                 }
             }
             $this->xaCommit($xidArr);
-            Db::connection('rt_center')->table('reset_transact_sql')->where('transact_id', 'like', $transactId . '%')->delete();
-            Db::connection('rt_center')->table('reset_transact_req')->where('transact_id', $transactId)->delete();
-            Db::connection('rt_center')->table('reset_transact')->where('transact_id', $transactId)->delete();
+            // Db::connection('rt_center')->table('reset_transact_sql')->where('transact_id', 'like', $transactId . '%')->delete();
+            // Db::connection('rt_center')->table('reset_transact_req')->where('transact_id', $transactId)->delete();
+            // Db::connection('rt_center')->table('reset_transact')->where('transact_id', $transactId)->delete();
         }
         
     }
@@ -154,8 +155,9 @@ class ResetTransaction
 
     public function middlewareBeginTransaction($transactId)
     {
-        $resolver = ApplicationContext::getContainer()->get(ConnectionResolverInterface::class);
-        $connName = $resolver->getDefaultConnection();
+        // $resolver = ApplicationContext::getContainer()->get(ConnectionResolverInterface::class);
+        // $connName = $resolver->getDefaultConnection();
+        $connName =  Context::get('rt_connection_defaultName');
         $transactIdArr = explode('-', $transactId);
         $sqlArr = Db::connection('rt_center')
             ->table('reset_transact_sql')
@@ -372,11 +374,6 @@ class ResetTransaction
 
     public function saveQuery($query, $bindings, $result, $checkResult, $keyName = null, $id = null)
     {
-        $connection = Db::connection();
-        $conName = $connection->getConfig('connection_name');
-        if (is_null($conName)) {
-            throw new ResetTransactionException('rt database config [connection_name] can not be null');
-        }
         $rtTransactId = $this->getTransactId();
         if ($rtTransactId && $query && !strpos($query, 'reset_transact')) {
             $subString = strtolower(substr(trim($query), 0, 12));
@@ -385,6 +382,12 @@ class ResetTransaction
 
             $sql = str_replace("?", "'%s'", $query);
             $completeSql = vsprintf($sql, $bindings);
+
+            $connection = Context::get('rt_connection');
+            $conName = $connection->getConfig('connection_name');
+            if (is_null($conName)) {
+                throw new ResetTransactionException('rt database config [connection_name] can not be null');
+            }
 
             if (in_array($action, ['insert', 'update', 'delete', 'set', 'savepoint', 'rollback'])) {
                 $backupSql = $completeSql;

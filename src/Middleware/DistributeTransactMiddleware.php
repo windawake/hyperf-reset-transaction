@@ -48,11 +48,11 @@ class DistributeTransactMiddleware implements MiddlewareInterface
                 throw new ResetTransactionException('rt_request_id cannot be null');
             }
             Context::set('rt_request_id', $requestId);
-            $item = DB::connection('rt_center')->table('reset_transact_req')->where('request_id', $requestId)->first();
-            if ($item) {
-                $data = json_decode($item->response, true);
-                return Response::json($data);
-            }
+            // $item = DB::connection('rt_center')->table('reset_transact_req')->where('request_id', $requestId)->first();
+            // if ($item) {
+            //     $data = json_decode($item->response, true);
+            //     return Response::json($data);
+            // }
 
             RT::middlewareBeginTransaction($transactId);
         }
@@ -61,14 +61,14 @@ class DistributeTransactMiddleware implements MiddlewareInterface
 
         $requestId = $request->getHeaderLine('rt_request_id');
         $transactId = $request->getHeaderLine('rt_transact_id');
-        $transactIdArr = explode('-', $transactId);
+        // $transactIdArr = explode('-', $transactId);
         if ($transactId && $response->isSuccessful()) {
             RT::middlewareRollback();
-            DB::connection('rt_center')->table('reset_transact_req')->insert([
-                'transact_id' => $transactIdArr[0],
-                'request_id' => $requestId,
-                'response' => $response->getBody()->getContents(),
-            ]);
+            // DB::connection('rt_center')->table('reset_transact_req')->insert([
+            //     'transact_id' => $transactIdArr[0],
+            //     'request_id' => $requestId,
+            //     'response' => $response->getBody()->getContents(),
+            // ]);
         }
 
         return $response;

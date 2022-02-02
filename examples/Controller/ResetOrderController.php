@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\ResetOrderModel;
+use Exception;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\Middlewares;
@@ -54,6 +55,11 @@ class ResetOrderController extends AbstractController
     public function store()
     {
         //
+        $orderNo = $this->request->input('order_no');
+        $item = ResetOrderModel::where('order_no', $orderNo)->first();
+        if ($item) {
+            throw new Exception("order_no is exist");
+        }
         return ResetOrderModel::create($this->request->all());
     }
 
