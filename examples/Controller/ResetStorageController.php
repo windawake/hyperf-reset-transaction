@@ -71,9 +71,9 @@ class ResetStorageController extends AbstractController
         $item = ResetStorageModel::findOrFail($id);
         if ($this->request->has('decr_stock_qty')) {
             $decrQty = (float) $this->request->input('decr_stock_qty');
-            $ret = $item->where('stock_qty', '>', $decrQty)->decrement('stock_qty', $decrQty);
+            $ret = ResetStorageModel::where('id', $id)->where('stock_qty', '>', $decrQty)->decrement('stock_qty', $decrQty);
         } else {
-            $ret = $item->update($this->request->all());
+            $ret = ResetStorageModel::where('id', $id)->update($this->request->all());
         }
         return ['result' => $ret];
     }

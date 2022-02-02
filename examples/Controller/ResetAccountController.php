@@ -78,9 +78,9 @@ class ResetAccountController extends AbstractController
         $item = ResetAccountModel::findOrFail($id);
         if ($this->request->has('decr_amount')) {
             $decrAmount = (float) $this->request->input('decr_amount');
-            $ret = $item->where('amount', '>', $decrAmount)->decrement('amount', $decrAmount);
+            $ret = ResetAccountModel::where('id', $id)->where('amount', '>', $decrAmount)->decrement('amount', $decrAmount);
         } else {
-            $ret = $item->update($this->request->all());
+            $ret = ResetAccountModel::where('id', $id)->update($this->request->all());
         }
 
         return ['result' => $ret];
