@@ -10,6 +10,8 @@ use Hyperf\Utils\Context;
 use Hyperf\Guzzle\CoroutineHandler;
 use GuzzleHttp\HandlerStack;
 use Hyperf\Database\ConnectionResolverInterface;
+use Hyperf\Utils\Exception\ParallelExecutionException;
+use Hyperf\Utils\Parallel;
 
 class ResetTransaction
 {
@@ -120,16 +122,29 @@ class ResetTransaction
             }
     
             $this->xaBeginTransaction($xidArr);
+            $count = count($xidMap);
+            $parallel = new Parallel($count);
             foreach ($xidMap as $name => $item) {
-                $sqlCollects = $item['sql_list'];
-                foreach ($sqlCollects as $item) {
-                    $result = Db::connection($name)->getPdo()->exec($item->sql);
-                    if ($item->check_result && $result != $item->result) {
-                        throw new ResetTransactionException("db had been changed by anothor transact_id");
+                $parallel->add(function() use($name, $item){
+                    $sqlCollects = $item['sql_list'];
+                    foreach ($sqlCollects as $item) {
+                        $result = Db::connection($name)->getPdo()->exec($item->sql);
+                        if ($item->check_result && $result != $item->result) {
+                            throw new ResetTransactionException("db had been changed by anothor transact_id");
+                        }
                     }
-                }
+                });
             }
-            $this->xaCommit($xidArr);
+
+            try {
+                $parallel->wait();
+                $this->xaCommit($xidArr);
+            } catch(ParallelExecutionException $ex) {
+                $this->xaRollBack($xidArr);
+
+                throw $ex;
+            }
+            
             // Db::connection('rt_center')->table('reset_transact_sql')->where('transact_id', 'like', $transactId . '%')->delete();
             // Db::connection('rt_center')->table('reset_transact_req')->where('transact_id', $transactId)->delete();
             // Db::connection('rt_center')->table('reset_transact')->where('transact_id', $transactId)->delete();

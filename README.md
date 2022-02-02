@@ -101,12 +101,12 @@ OK (3 tests, 12 assertions)
 
 1）使用RT模式，创建一个订单的消耗性能跟普通事务创建一个订单+10条简单sql语句差不多
 
-2）一个完整的创建订单是包含订单服务，库存服务和账户服务。使用RT模式，qps从140下降到40，性能大约是不使用分布式事务的1/3
+2）一个完整的创建订单是包含订单服务，库存服务和账户服务。使用RT模式，qps从140下降到40，性能大约是不使用分布式事务的1/2
 
 
-**压测创建一个订单 + 10条简单订单查询**
+**压测创建一个订单 + 7条简单订单查询**
 
-加10条简单的sql语句，是因为RT分布式事务，后面处理的逻辑大约有10条sql，这样方便比较。
+加7条简单的sql语句，是因为RT分布式事务，后面处理的逻辑大约有7条sql，这样方便比较。
 
 ```shell
 root@DESKTOP-VQOELJ5:/web/linux/php/hyperf/hyperf22# composer test -- --testsuite=Transaction --filter=testBatchCreate01
@@ -138,39 +138,39 @@ Document Path:          /api/resetOrderTest/orderWithLocal
 Document Length:        10 bytes
 
 Concurrency Level:      100
-Time taken for tests:   7.408 seconds
+Time taken for tests:   5.863 seconds
 Complete requests:      1000
 Failed requests:        0
 Total transferred:      153000 bytes
 Total body sent:        161000
 HTML transferred:       10000 bytes
-Requests per second:    134.99 [#/sec] (mean)
-Time per request:       740.782 [ms] (mean)
-Time per request:       7.408 [ms] (mean, across all concurrent requests)
-Transfer rate:          20.17 [Kbytes/sec] received
-                        21.22 kb/s sent
-                        41.39 kb/s total
+Requests per second:    170.58 [#/sec] (mean)
+Time per request:       586.251 [ms] (mean)
+Time per request:       5.863 [ms] (mean, across all concurrent requests)
+Transfer rate:          25.49 [Kbytes/sec] received
+                        26.82 kb/s sent
+                        52.31 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.5      0       2
-Processing:    30  713  88.2    730     928
-Waiting:       28  713  88.2    730     928
-Total:         30  713  87.9    730     929
+Connect:        0    0   0.4      0       2
+Processing:    26  562  77.5    582     682
+Waiting:       24  562  77.5    581     682
+Total:         26  563  77.2    582     683
 
 Percentage of the requests served within a certain time (ms)
-  50%    730
-  66%    735
-  75%    737
-  80%    739
-  90%    744
-  95%    750
-  98%    787
-  99%    862
- 100%    929 (longest request)
+  50%    582
+  66%    585
+  75%    588
+  80%    590
+  90%    593
+  95%    596
+  98%    601
+  99%    626
+ 100%    683 (longest request)
 
 
-Time: 00:07.444, Memory: 16.00 MB
+Time: 00:05.894, Memory: 16.00 MB
 
 OK (1 test, 2 assertions)
 ```
@@ -207,39 +207,39 @@ Document Path:          /api/resetOrderTest/orderWithRt
 Document Length:        10 bytes
 
 Concurrency Level:      100
-Time taken for tests:   9.307 seconds
+Time taken for tests:   6.006 seconds
 Complete requests:      1000
 Failed requests:        0
 Total transferred:      153000 bytes
 Total body sent:        158000
 HTML transferred:       10000 bytes
-Requests per second:    107.45 [#/sec] (mean)
-Time per request:       930.701 [ms] (mean)
-Time per request:       9.307 [ms] (mean, across all concurrent requests)
-Transfer rate:          16.05 [Kbytes/sec] received
-                        16.58 kb/s sent
-                        32.63 kb/s total
+Requests per second:    166.51 [#/sec] (mean)
+Time per request:       600.557 [ms] (mean)
+Time per request:       6.006 [ms] (mean, across all concurrent requests)
+Transfer rate:          24.88 [Kbytes/sec] received
+                        25.69 kb/s sent
+                        50.57 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
 Connect:        0    0   0.6      0       3
-Processing:    55  910 224.4    905    1552
-Waiting:       52  910 224.5    905    1552
-Total:         55  910 224.4    905    1552
+Processing:    55  579  58.7    578     775
+Waiting:       52  579  58.7    578     775
+Total:         55  579  58.7    578     777
 
 Percentage of the requests served within a certain time (ms)
-  50%    905
-  66%   1007
-  75%   1070
-  80%   1106
-  90%   1226
-  95%   1286
-  98%   1336
-  99%   1383
- 100%   1552 (longest request)
+  50%    578
+  66%    597
+  75%    610
+  80%    619
+  90%    641
+  95%    672
+  98%    703
+  99%    753
+ 100%    777 (longest request)
 
 
-Time: 00:09.340, Memory: 16.00 MB
+Time: 00:06.036, Memory: 16.00 MB
 
 OK (1 test, 1 assertion)
 ```
@@ -260,7 +260,7 @@ Completed 800 requests
 Completed 900 requests
 Completed 1000 requests
 Finished 1000 requests
-F                                                                   1 / 1 (100%)
+.                                                                   1 / 1 (100%)
 This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -273,42 +273,44 @@ Server Hostname:        127.0.0.1
 Server Port:            9501
 
 Document Path:          /api/resetAccountTest/createOrderWithLocal
-Document Length:        25 bytes
+Document Length:        24 bytes
 
 Concurrency Level:      100
-Time taken for tests:   7.061 seconds
+Time taken for tests:   9.143 seconds
 Complete requests:      1000
 Failed requests:        0
-Total transferred:      168000 bytes
+Total transferred:      167000 bytes
 Total body sent:        169000
-HTML transferred:       25000 bytes
-Requests per second:    141.63 [#/sec] (mean)
-Time per request:       706.078 [ms] (mean)
-Time per request:       7.061 [ms] (mean, across all concurrent requests)
-Transfer rate:          23.24 [Kbytes/sec] received
-                        23.37 kb/s sent
-                        46.61 kb/s total
+HTML transferred:       24000 bytes
+Requests per second:    109.37 [#/sec] (mean)
+Time per request:       914.296 [ms] (mean)
+Time per request:       9.143 [ms] (mean, across all concurrent requests)
+Transfer rate:          17.84 [Kbytes/sec] received
+                        18.05 kb/s sent
+                        35.89 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    1   3.4      0      12
-Processing:    40  677  84.2    680    1036
-Waiting:       38  677  84.2    680    1036
-Total:         40  678  84.1    680    1048
+Connect:        0    0   0.5      0       2
+Processing:    62  881 120.0    879    1448
+Waiting:       60  881 120.0    879    1448
+Total:         62  881 120.1    879    1449
 
 Percentage of the requests served within a certain time (ms)
-  50%    680
-  66%    700
-  75%    704
-  80%    708
-  90%    721
-  95%    752
-  98%    923
-  99%    986
- 100%   1048 (longest request)
+  50%    879
+  66%    897
+  75%    912
+  80%    918
+  90%    942
+  95%   1024
+  98%   1283
+  99%   1375
+ 100%   1449 (longest request)
 
 
-Time: 00:07.207, Memory: 16.00 MB
+Time: 00:09.205, Memory: 16.00 MB
+
+OK (1 test, 3 assertions)
 ```
 
 **压测开启RT模式创建一个完整的订单**
@@ -326,7 +328,7 @@ Completed 800 requests
 Completed 900 requests
 Completed 1000 requests
 Finished 1000 requests
-F                                                                   1 / 1 (100%)
+.                                                                   1 / 1 (100%)
 This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -339,42 +341,44 @@ Server Hostname:        127.0.0.1
 Server Port:            9501
 
 Document Path:          /api/resetAccountTest/createOrderWithRt
-Document Length:        25 bytes
+Document Length:        24 bytes
 
 Concurrency Level:      100
-Time taken for tests:   24.382 seconds
+Time taken for tests:   18.640 seconds
 Complete requests:      1000
 Failed requests:        0
-Total transferred:      168000 bytes
+Total transferred:      167000 bytes
 Total body sent:        166000
-HTML transferred:       25000 bytes
-Requests per second:    41.01 [#/sec] (mean)
-Time per request:       2438.191 [ms] (mean)
-Time per request:       24.382 [ms] (mean, across all concurrent requests)
-Transfer rate:          6.73 [Kbytes/sec] received
-                        6.65 kb/s sent
-                        13.38 kb/s total
+HTML transferred:       24000 bytes
+Requests per second:    53.65 [#/sec] (mean)
+Time per request:       1863.969 [ms] (mean)
+Time per request:       18.640 [ms] (mean, across all concurrent requests)
+Transfer rate:          8.75 [Kbytes/sec] received
+                        8.70 kb/s sent
+                        17.45 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.4      0       2
-Processing:   133 2350 222.8   2394    3058
-Waiting:      131 2350 222.8   2394    3058
-Total:        133 2350 222.6   2394    3059
+Connect:        0    0   0.5      0       2
+Processing:    72 1823 245.0   1816    3075
+Waiting:       69 1823 245.0   1816    3075
+Total:         72 1823 245.2   1816    3076
 
 Percentage of the requests served within a certain time (ms)
-  50%   2394
-  66%   2410
-  75%   2419
-  80%   2426
-  90%   2446
-  95%   2469
-  98%   2696
-  99%   2881
- 100%   3059 (longest request)
+  50%   1816
+  66%   1837
+  75%   1850
+  80%   1860
+  90%   1917
+  95%   2082
+  98%   2699
+  99%   2897
+ 100%   3076 (longest request)
 
 
-Time: 00:24.478, Memory: 16.00 MB
+Time: 00:18.695, Memory: 16.00 MB
+
+OK (1 test, 3 assertions)
 ```
 
 ## 参考教程
