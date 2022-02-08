@@ -99,9 +99,9 @@ OK (3 tests, 12 assertions)
 
 报告总结：
 
-1）使用RT模式，创建一个订单的消耗性能跟普通事务创建一个订单+10条简单sql语句差不多
+1）使用RT模式，创建一个订单的消耗性能跟普通事务创建一个订单+7条简单sql语句差不多
 
-2）一个完整的创建订单是包含订单服务，库存服务和账户服务。使用RT模式，qps从140下降到40，性能大约是不使用分布式事务的1/2
+2）一个完整的创建订单是包含订单服务，库存服务和账户服务。使用RT模式，qps从109下降到53，性能大约是不使用分布式事务的1/2
 
 
 **压测创建一个订单 + 7条简单订单查询**
@@ -385,7 +385,7 @@ OK (1 test, 3 assertions)
 https://learnku.com/articles/62377
 
 
-![](https://cdn.learnku.com/uploads/images/202201/31/46914/7PISKMj6cY.jpg!large)
+![](https://cdn.learnku.com/uploads/images/202202/07/46914/KhFZO0fbCz.png!large)
 
 扫码进微信群。希望有更多的朋友相互学习和一起研究分布式事务的知识。
 
