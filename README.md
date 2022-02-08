@@ -63,7 +63,7 @@ composer require windawake/hyperf-reset-transaction dev-master
 rm -rf ./runtime && php ./bin/hyperf.php resetTransact:create-examples && php ./bin/hyperf.php start
 ```
 
-最后运行测试脚本 `
+最后一步，运行测试脚本 `
 composer test -- --testsuite=Transaction --filter=ServiceTest
 `运行结果如下所示，3个例子测试通过。
 ```shell
@@ -91,19 +91,19 @@ OK (3 tests, 12 assertions)
 
 本地电脑：i5-9400F 24G内存 wsl ubuntu
 
-压测场景：
+- 压测场景：
 
 1）创建一个简单的订单 1000请求 100并发 
 
 2）订单服务创建一个订单，然后库存服务扣减库存，最后账户服务扣减金额  1000请求 100并发
 
-报告总结：
+- 报告总结：
 
 1）使用RT模式，创建一个订单的消耗性能跟普通事务创建一个订单+7条简单sql语句差不多
 
 2）一个完整的创建订单是包含订单服务，库存服务和账户服务。使用RT模式，qps从109下降到53，性能大约是不使用分布式事务的1/2
 
-压测前准备：
+- 压测前准备：
 
 做测试之前需要设置mysql最大连接数为3000：
 
