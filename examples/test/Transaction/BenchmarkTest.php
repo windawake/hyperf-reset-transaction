@@ -16,6 +16,7 @@ use Hyperf\DbConnection\Db;
 use App\Model\ResetOrderModel;
 use App\Model\ResetAccountModel;
 use App\Model\ResetStorageModel;
+use Swoole\Coroutine\System;
 
 class BenchmarkTest extends TestCase
 {
@@ -25,6 +26,7 @@ class BenchmarkTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->checkAb();
     }
 
     public function testDeadlock01()
@@ -161,5 +163,13 @@ class BenchmarkTest extends TestCase
         $this->assertTrue(abs(($amount1 - $amount2) - ($amountSum2 - $amountSum1)) < 0.001);
         $this->assertTrue(($stock1 - $stock2) == ($stockSum2 - $stockSum1));
 
+    }
+
+    private function checkAb()
+    {
+        $ret = System::exec('which abc');
+        if (empty($ret['output'])) {
+            throw new \InvalidArgumentException('ab not exists.');
+        }
     }
 }
