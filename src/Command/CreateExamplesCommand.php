@@ -39,32 +39,18 @@ class CreateExamplesCommand extends Command
     public function handle()
     {
         //
+        try {
+            Db::getDoctrineSchemaManager();
+        } catch (\Throwable $ex) {
+            $this->error($ex->getMessage(). '. try: composer require "doctrine/dbal"');
+            die;
+        }
+
         $this->addFileToApp();
         $this->addTableToDatabase();
         $this->addTestsuitToPhpunit();
 
         $this->info('Example created successfully!');
-
-        $transactTable = 'reset_transaction';
-        $productTable = 'reset_product';
-        Schema::dropIfExists($transactTable);
-        Schema::create($transactTable, function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('transact_id', 512);
-            $table->text('sql');
-            $table->integer('result')->default(0);
-            $table->dateTime('created_at')->useCurrent();
-            $table->index('transact_id');
-        });
-
-        Schema::dropIfExists($productTable);
-        Schema::create($productTable, function (Blueprint $table) {
-            $table->increments('pid');
-            $table->integer('store_id')->default(0);
-            $table->string('product_name')->default('');
-            $table->tinyInteger('status')->default(0);
-            $table->dateTime('created_at')->useCurrent();
-        });
     }
 
     /**
