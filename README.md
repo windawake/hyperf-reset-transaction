@@ -392,7 +392,7 @@ OK (1 test, 3 assertions)
 https://learnku.com/articles/62377
 
 
-![](https://cdn.learnku.com/uploads/images/202202/21/46914/ZfPsYrp73u.jpg!large)
+![](https://cdn.learnku.com/uploads/images/202202/25/46914/heg3sLvwiG.jpg!large)
 
 扫码进微信群。希望有更多的朋友相互学习和一起研究分布式事务的知识。
 
